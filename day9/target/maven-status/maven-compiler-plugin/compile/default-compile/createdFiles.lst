@@ -1,0 +1,4 @@
+com\example\day9\aspect\ApiLogAspect.class
+com\example\day9\web\TaskApiController.class
+com\example\day9\domain\TaskSummary.class
+com\example\day9\Day9Application.class
