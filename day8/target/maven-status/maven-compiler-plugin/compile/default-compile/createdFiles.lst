@@ -1,0 +1,10 @@
+com\example\day8\web\AdminHintController.class
+com\example\day8\lifecycle\BeanLifecycleProbe.class
+com\example\day8\domain\User.class
+com\example\day8\repository\UserRepository.class
+com\example\day8\service\UserService.class
+com\example\day8\Day8Application.class
+com\example\day8\web\TaskQueryController.class
+com\example\day8\repository\TaskRepository.class
+com\example\day8\domain\Task.class
+com\example\day8\service\TaskService.class

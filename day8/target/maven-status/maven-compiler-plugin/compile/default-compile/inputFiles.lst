@@ -1,0 +1,10 @@
+D:\java_program\JAVA_learn\day8\src\main\java\com\example\day8\Day8Application.java
+D:\java_program\JAVA_learn\day8\src\main\java\com\example\day8\domain\Task.java
+D:\java_program\JAVA_learn\day8\src\main\java\com\example\day8\domain\User.java
+D:\java_program\JAVA_learn\day8\src\main\java\com\example\day8\lifecycle\BeanLifecycleProbe.java
+D:\java_program\JAVA_learn\day8\src\main\java\com\example\day8\repository\TaskRepository.java
+D:\java_program\JAVA_learn\day8\src\main\java\com\example\day8\repository\UserRepository.java
+D:\java_program\JAVA_learn\day8\src\main\java\com\example\day8\service\TaskService.java
+D:\java_program\JAVA_learn\day8\src\main\java\com\example\day8\service\UserService.java
+D:\java_program\JAVA_learn\day8\src\main\java\com\example\day8\web\AdminHintController.java
+D:\java_program\JAVA_learn\day8\src\main\java\com\example\day8\web\TaskQueryController.java
