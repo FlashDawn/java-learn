@@ -1,0 +1,6 @@
+# 精简构建上下文：只把最终 jar 送进 Docker daemon
+# 好处：上下文小 → 传输快；源码不外泄进镜像层
+target/**
+!target/*.jar
+.idea
+*.iml

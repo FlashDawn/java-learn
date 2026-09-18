@@ -1,0 +1,2 @@
+Hello from Day46 Docker image!
+这一行是镜像构建时用 COPY 打进来的文件内容。

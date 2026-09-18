@@ -1,0 +1,71 @@
+# Day48：一份文件编排三个服务
+# 用法：cd day48; docker compose up -d
+# 教学要点逐行标注，生产习惯从第一天养成。
+
+# name 固定项目名（默认取目录名）；项目名会成为容器/网络/卷的前缀
+name: day48
+
+services:
+
+  # ---------- 应用：Day47 构建好的镜像，不改一行代码 ----------
+  app:
+    image: day14-api:1.0
+    container_name: day48-app
+    ports:
+      - "18080:8080"          # 只有需要对外的服务才发布端口
+    environment:
+      # 教学点：Spring Boot 宽松绑定，环境变量直接覆盖 application.yml
+      # 镜像不变、配置外置 —— 一次构建处处运行的关键
+      SPRING_APPLICATION_NAME: day14-api-compose
+      JAVA_TOOL_OPTIONS: -Xmx256m   # 容器内 JVM 调优也走环境变量
+    depends_on:
+      # 教学点：不仅「先启动」，还要「等健康」——否则应用起得比 DB 快会连接失败
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - backend
+
+  # ---------- PostgreSQL：数据必须挂卷 ----------
+  postgres:
+    image: postgres:16-alpine
+    container_name: day48-postgres
+    environment:
+      POSTGRES_USER: day14
+      POSTGRES_PASSWORD: day14pwd   # 学习环境明文即可；生产用 secrets
+      POSTGRES_DB: day14
+    volumes:
+      - pgdata:/var/lib/postgresql/data   # 容器删了数据还在（Day46 Volume）
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U day14"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - backend
+    # 注意：不发布 5432 到宿主机 —— 只给内部服务用，暴露面最小化
+
+  # ---------- Redis：同上模式 ----------
+  redis:
+    image: redis:7-alpine
+    container_name: day48-redis
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "PING"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - backend
+    # 不发布 6379：与散养容器 redis22（占用宿主机 6379）互不干扰
+
+# ---------- 命名卷：Docker 统一管理的持久目录 ----------
+volumes:
+  pgdata:
+  redisdata:
+
+# ---------- 自建桥接网络：内部按服务名互相 DNS 解析 ----------
+networks:
+  backend:
