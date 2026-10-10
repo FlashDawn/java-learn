@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: day35-mq-project
+  datasource:
+    url: jdbc:postgresql://127.0.0.1:5432/day14
+    username: day14
+    password: day14pwd
+  jpa:
+    hibernate:
+      ddl-auto: update   # 学习用自动建表；生产必须改 validate + Flyway 迁移
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: day30
+    password: day30pwd
+    listener:
+      simple:
+        retry:
+          enabled: true          # 本地重试：Listener 抛异常后在 JVM 内重试
+          max-attempts: 3        # 3 次都失败 → 消息被拒绝 → 进 DLQ
+          initial-interval: 1000ms
+
+server:
+  port: 18082

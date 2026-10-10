@@ -1,11 +1,11 @@
 # Java 学习进度
 
-- 当前周：Week 4 回补完成（Week 5 进行中）
-- 当前日：Day 28（Redis 综合实战）— **已闭环**（2026-09-24 验收七问通过，Week 4 收官）
+- 当前周：Week 6
+- 当前日：Day 36（微服务基础）— **已闭环**（2026-10-10 闸门三问通过）
 - 节奏：标准
-- 今日主题：Cache-Aside / 穿透 / 击穿 / 雪崩 / 分布式锁 / 一致性 + Redis 集群 / Geode 集群补充
-- 学习包：`day28/`（`Day28Application`、学习笔记、README）；复用容器 `redis22`
-- 环境状态：✅ Redis 7 在 6379；Demo 四场景已跑通；Web 在 18080
+- 今日主题：Monolith vs Microservice；拆分 / 通信 / 发现 / 配置中心 / 负载均衡
+- 学习包：`day36/`（双服务工程、学习笔记、README）；无外部中间件
+- 环境状态：✅ user-service 18090 + task-service 18091；跨进程聚合接口实测通过
 
 ## 阻塞记录（已更新）
 
@@ -44,6 +44,7 @@
 - **Day30**（2026-09-21 开课 / 09-22 闭环）：RabbitMQ。容器 `day30-rabbit`；Direct / Fanout / Topic 路由演示已跑通。闸门三问通过（第 3 问曾误答 Topic，订正为 Direct 二次拉取为空）
 - **Day31**（2026-09-22 开课并闭环）：RabbitMQ 可靠性。复用 `day30-rabbit`；ACK / NACK / Retry / DLQ / Prefetch 演示已跑通（task-2 重试成功、task-9 进死信）。闸门三问通过（第 1 问「Worker 崩了消息被删」订正为「Unacked 重投」；第 3 问 Prefetch 方向纠正）
 - **Day33**（2026-09-22 开课并闭环）：RocketMQ 基础。容器 `day33-rocketmq`（NameServer 9876 / Broker 10911，需 `brokerIP1=127.0.0.1`）；Topic / Producer / Consumer / Consumer Group / Offset 概念已学，Demo 跑通（3 条消息收发成功）。排障一则：Broker 默认注册容器内网地址导致客户端连不上，写 `broker.conf` 重启解决。闸门三问通过（第 1 问补正「Exchange 也不存消息，纯路由」；第 3 问补充「Offset 未提交即宕机仍可能重复」幂等前提）。Retry / DLQ 待 Day34 深入
+- **Day35**（2026-10-10 开课并闭环）：MQ 综合实战。`day35/` 工程落地完整链路：POST 落库(PENDING) → RabbitMQ → Worker 执行 → DONE；失败任务 3 次本地重试 → DLX → DLQ → DeadLetterListener 标 FAILED，全链路实测通过。幂等用 DONE 状态关口；消息只带 taskId 回库查。排障两则：curl 中文 query 400（改 --data-urlencode）、day48-postgres 无端口映射（新建 day35-postgres）。验收七问通过（第 2 题后半导师代答 Unacked→requeue；第 5 题补四种幂等实现；第 7 题补正「ACK 丢失→重发」根源与 at-least-once+业务幂等共识）——**Week 5 验收达成**（Day32/34 未学挂起）
 
 ### Week 4 新学（Redis）
 
@@ -53,7 +54,11 @@
 
 - Day15–21 未学
 - Day24–28 未学（缓存策略与 Redis 综合，按需回补）→ **Day28 已于 2026-09-23 回补**；Day24–27 仍未学
-- Day32–42 未学（消息可靠性、RocketMQ、微服务等，按需回补）
+- Day32–42 未学（消息可靠性、RocketMQ、微服务等，按需回补）→ **Day33/35/36 已学**；Day32、34、37–42 仍未学
+
+### Week 6 新学（微服务）
+
+- **Day36**（2026-10-10 开课并闭环）：微服务基础。单工程双服务：user-service(18090) + task-service(18091)，RestTemplate 跨进程聚合实测通过（`/tasks/1/detail` 返回任务+owner）。理论覆盖单体 vs 微服务、按域拆分、同步/异步通信选型、服务发现（硬编码 URL 痛点实证）、配置中心、客户端/服务端 LB。闸门三问通过（第 3 问服务发现导师代答）
 - Day43–45 未学（Linux 基础/进程/网络，按需回补）
 
 ## 下一计划日
