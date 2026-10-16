@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: data-service
+  cloud:
+    nacos:
+      config:
+        server-addr: 127.0.0.1:8848
+        import-check:
+          enabled: false   # 学习阶段允许 Nacos 上还没有配置也正常启动（用本地兜底值）
+  config:
+    import:
+      # 启动时从配置中心拉取 data-id = data-service.yaml 的内容，并入 Environment
+      - optional:nacos:data-service.yaml
+server:
+  port: 18092

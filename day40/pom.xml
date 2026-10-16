@@ -1,0 +1,42 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.example</groupId>
+    <artifactId>day40-zk</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <!-- Day40：纯 Java + Curator 客户端，不引 Spring Boot——ZooKeeper 是独立于 Spring 生态的
+         分布式协调基础设施，用 main 类直联最能看清「客户端 ↔ ZK 集群」的本来面目 -->
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <curator.version>5.7.1</curator.version>
+    </properties>
+
+    <dependencies>
+        <!-- Curator：ZooKeeper 客户端的事实标准。原生 ZK API 太裸（Watcher 要手动重注册、
+             重连要手动处理、异常分类繁琐），Curator 把这些全封装掉 -->
+        <dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-framework</artifactId>
+            <version>${curator.version}</version>
+        </dependency>
+        <!-- recipes：分布式原语成品——LeaderLatch（选举）、InterProcessMutex（锁）、
+             NodeCache（持续监听）。本日 Demo 4/5 全靠它 -->
+        <dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-recipes</artifactId>
+            <version>${curator.version}</version>
+        </dependency>
+        <!-- slf4j 简单实现：Curator 只依赖 slf4j-api，没有实现会打 NOP 警告 -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.36</version>
+        </dependency>
+    </dependencies>
+</project>

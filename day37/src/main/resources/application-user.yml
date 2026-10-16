@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: user-service   # 注册到 Nacos 的服务名：task-service 就靠这个名字找到它
+server:
+  port: 18090

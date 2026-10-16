@@ -1,0 +1,10 @@
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848   # 三个服务共用的注册中心地址
+      config:
+        import-check:
+          # nacos-config 在共享 classpath 上，默认强制每个服务都声明 spring.config.import；
+          # 本工程只有 data-service 用配置中心，其余两个关掉这个启动检查（对照笔记 §5 故障 1）
+          enabled: false

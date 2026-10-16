@@ -1,0 +1,10 @@
+server:
+  port: 18110
+
+dubbo:
+  application:
+    name: task-service
+  registry:
+    address: nacos://127.0.0.1:8848
+  consumer:
+    check: false   # 启动时不强制 Provider 在线（先起 Consumer 也能启动；生产按需开启）

@@ -1,11 +1,11 @@
 # Java 学习进度
 
 - 当前周：Week 6
-- 当前日：Day 36（微服务基础）— **已闭环**（2026-10-10 闸门三问通过）
+- 当前日：Day 40（ZooKeeper）— **已闭环**（2026-10-16 闸门三问通过）
 - 节奏：标准
-- 今日主题：Monolith vs Microservice；拆分 / 通信 / 发现 / 配置中心 / 负载均衡
-- 学习包：`day36/`（双服务工程、学习笔记、README）；无外部中间件
-- 环境状态：✅ user-service 18090 + task-service 18091；跨进程聚合接口实测通过
+- 今日主题：ZNode / Session / Watcher / Leader / Follower / Quorum；服务发现、分布式协调、Leader Election、Distributed Lock
+- 学习包：`day40/`（纯 Java + Curator 5.7.1，五个 Demo）；容器 `day40-zk`（ZK 3.9，2181，DaoCloud 镜像）
+- 环境状态：✅ 五 Demo 全实证（选举故障转移、锁互斥 10000 精确、无锁 67554/期望 50 万）；Day36–40 全部闭环，Week 6 仅剩 Day41/42
 
 ## 阻塞记录（已更新）
 
@@ -54,11 +54,15 @@
 
 - Day15–21 未学
 - Day24–28 未学（缓存策略与 Redis 综合，按需回补）→ **Day28 已于 2026-09-23 回补**；Day24–27 仍未学
-- Day32–42 未学（消息可靠性、RocketMQ、微服务等，按需回补）→ **Day33/35/36 已学**；Day32、34、37–42 仍未学
+- Day32–42 未学（消息可靠性、RocketMQ、微服务等，按需回补）→ **Day33/35/36/37/38/39/40 已学**；Day32、34、41–42 仍未学
 
 ### Week 6 新学（微服务）
 
 - **Day36**（2026-10-10 开课并闭环）：微服务基础。单工程双服务：user-service(18090) + task-service(18091)，RestTemplate 跨进程聚合实测通过（`/tasks/1/detail` 返回任务+owner）。理论覆盖单体 vs 微服务、按域拆分、同步/异步通信选型、服务发现（硬编码 URL 痛点实证）、配置中心、客户端/服务端 LB。闸门三问通过（第 3 问服务发现导师代答）
+- **Day37**（2026-10-15 开课并闭环）：Nacos。容器 `day37-nacos`（2.3.2 standalone）；三服务全部注册成功，`@LoadBalanced` 服务名寻址聚合通过（消灭 Day36 硬编码），配置中心热更新实证（不重启生效）。理论覆盖临时/持久实例心跳与健康检查、AP/CP 分野。排障两则：nacos-config 共享 classpath 触发全服务 import 强制检查（关 import-check）、镜像走华为云。闸门三问通过（第 2 题补订阅推送原理、第 3 题补 RefreshScope 代理重建机制）
+- **Day38**（2026-10-15 开课 / 10-16 闭环）：Spring Cloud。升级为多模块工程（Gateway 需 WebFlux 与 MVC 隔离）：gateway(18099) `lb://` 路由 → task(18101) `@FeignClient` 聚合 user(18100) → Resilience4j `@CircuitBreaker` 熔断降级。实测：网关聚合 `degraded:false`；停 user-service 后 200 返回降级 `degraded:true`。排障两则：Feign 缺 `spring-cloud-starter-loadbalancer`（No Feign Client for loadBalancing）；`@CircuitBreaker` 静默失效（缺 `spring-boot-starter-aop`，AOP 未织入）。闸门三问通过（第 2 题曾误判「Gateway 与 Feign 机制不同」，订正为同一套 loadbalancer 机制、仅接入位置不同）
+- **Day39**（2026-10-15 开课 / 10-16 闭环）：Dubbo。三模块：`day39-api` 契约 jar（接口 + DTO）、`day39-worker`（`@DubboService`，dubbo 协议 20880，纯 RPC 无 Web）、`day39-task`（`@DubboReference`，Web 18110）。注册中心复用 day37-nacos（Dubbo 按接口全名注册，注册 URL 实物含 `prefer.serialization=hessian2`）。**RPC 端到端实测通过**：`GET 18110/tasks/dispatch?title=生成月度报表` 返回 worker 执行结果，worker 终端打印执行日志、task 无（跨进程证据）。排障四则：① dubbo starter 不传递 `spring-boot-starter`；② dubbo-bom 把 Spring 压到 5.3.39 致 NoSuchMethodError（显式钉 spring-framework-bom 6.1.14 于 dubbo-bom 之前，dependency:tree 复验）；③ record DTO 与 Hessian2 不兼容（Fail to decode request，改经典 JavaBean 无参构造）；④ C 盘 0GB 致 Docker 卡死（学员清理至 8.15GB + 重启 Docker）。闸门三问通过（第 1 题偏题代答契约 jar 价值、第 3 题补「超时≠失败」与 retries=0 + 业务幂等两层防线）
+- **Day40**（2026-10-16 开课并闭环）：ZooKeeper。容器 `day40-zk`（3.9，DaoCloud 镜像）；纯 Java + Curator 5.7.1 五 Demo 全实证：ZNode 四类型（顺序节点序号）、Session 死→临时节点自动消（服务发现信任机制）、Watcher 一次性 vs NodeCache（通知合并实证）、LeaderLatch 选举+杀 Leader 自动转移、InterProcessMutex 锁（无锁 67554/期望 50 万 vs ZK 锁 10000 精确，呼应 Day6 与 Day28 Redis 锁对照）。排障三则：PowerShell 吞 -D 参数（加引号）、裸 ++ 不丢数据的实验假象（读-yield-写+50k 剂量）、华为云无 ZK 镜像（换 DaoCloud）。闸门三问通过（第 3 题导师代答：羊群效应 vs Watch 前驱接力、GC 停顿下两种锁都破产 + fencing token）
 - Day43–45 未学（Linux 基础/进程/网络，按需回补）
 
 ## 下一计划日

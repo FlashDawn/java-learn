@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: task-service
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+server:
+  port: 18101
+
+# Resilience4j 熔断规则：50% 失败率开闸，开闸 10s 后半开试探（对照笔记 §1.4）
+resilience4j:
+  circuitbreaker:
+    instances:
+      userQuery:
+        sliding-window-size: 10
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 10s
+        permitted-number-of-calls-in-half-open-state: 3

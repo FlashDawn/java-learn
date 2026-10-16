@@ -1,0 +1,10 @@
+# Maven 构建产物（各 dayN/target）——源码即教材，class/jar 不入库
+target/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# 系统
+Thumbs.db

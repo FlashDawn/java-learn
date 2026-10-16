@@ -1,0 +1,50 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.3.5</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.example</groupId>
+    <artifactId>day39-dubbo</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>day39-dubbo</name>
+    <packaging>pom</packaging>
+
+    <!-- api 模块是 Provider 与 Consumer 的共享契约 jar——Dubbo 的标志性工程结构（对照笔记 §1.4） -->
+    <modules>
+        <module>day39-api</module>
+        <module>day39-worker</module>
+        <module>day39-task</module>
+    </modules>
+
+    <properties>
+        <java.version>17</java.version>
+        <dubbo.version>3.3.0</dubbo.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- 修复 spring 版本冲突：dubbo-bom 把 spring 压到 5.3.x，显式钉回 Boot 3.3.5 对应的 6.1.14 -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-framework-bom</artifactId>
+                <version>6.1.14</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo-bom</artifactId>
+                <version>${dubbo.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>
